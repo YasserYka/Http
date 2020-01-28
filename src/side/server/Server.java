@@ -50,8 +50,10 @@ public class Server {
 			StringBuilder conetnt = new StringBuilder();
 			String line;
 			while((line = buffer.readLine()) != null) {
-				System.out.println(line);
+				conetnt.append(line);
 			}
+			
+			System.out.println(conetnt.toString());
 			client.close();
 		}catch (IOException e) {/*LOG IT*/}
 	}
