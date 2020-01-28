@@ -23,17 +23,8 @@ public class Server {
 	}
 	
 	public static void run() {
-		
-		if(!Optional.ofNullable(socket).isPresent()) {
-			//Throw error "Need to call create first"
-		}
-		
-		while(true) {
-			accept();
-			
-		}
-
-
+		if(!Optional.ofNullable(socket).isPresent()) {/*Throw error "Need to call create first*/}
+		while(true) {accept();}
 	}
 	
 	private static void accept() {
@@ -46,15 +37,24 @@ public class Server {
 	}
 
 	private static void handleClient(Socket client) {
+		StringBuilder request = null;
 		try(BufferedReader buffer = new BufferedReader(new InputStreamReader(client.getInputStream()))){
-			StringBuilder conetnt = new StringBuilder();
+			request = new StringBuilder();
+			
 			String line;
 			while((line = buffer.readLine()) != null) {
-				conetnt.append(line);
+				request.append(line);
 			}
-			
-			System.out.println(conetnt.toString());
-			client.close();
 		}catch (IOException e) {/*LOG IT*/}
+		
+		handleRequest(request.toString(), client);
 	}
+
+	private static void handleRequest(String string, Socket client) {
+		if(string.isEmpty())
+			closeSocket(client);
+		
+	}
+	
+	private static void closeSocket(Socket client) {try {client.close();} catch (IOException e) {}}
 }
