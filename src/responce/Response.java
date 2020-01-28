@@ -52,7 +52,7 @@ public class Response {
 			//Server information
 			responseAppender.append(String.format("%s\r\n", Header.SERVER + server));
 			//Content Type
-			responseAppender.append(String.format("%s\r\n", Header.CONTENT_TYPE.toString() + contentType));
+			responseAppender.append(String.format("%s; charset=utf-8\r\n", Header.CONTENT_TYPE.toString() + contentType));
 			//Content Length
 			responseAppender.append(String.format("%s\r\n", Header.CONTENT_LENGTH.toString() + contentLengthLine));
 			//Empty line

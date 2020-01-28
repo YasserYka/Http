@@ -24,5 +24,5 @@ public class parser {
 		return tokens;
 	}
 	
-	public int getColonIndex(String line) {return line.indexOf(':');}
+	private int getColonIndex(String line) {return line.indexOf(':');}
 }

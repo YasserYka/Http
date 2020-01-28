@@ -1,24 +1,36 @@
 package side.server;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.Buffer;
 import java.util.Optional;
+
+import request.RequestHandler;
+import responce.ContentType;
+import responce.Response;
+import responce.Status;
+import side.client.Client;
 
 public class Server {
 
 	private static ServerSocket socket = null;
-	private final static int PORT = 8080;
+	private final static int PORT = 1233;
 	
 	private Server() {}
 	
-	public static ServerSocket create() {
+	public static ServerSocket create() throws UnknownHostException {
 		if(!Optional.ofNullable(socket).isPresent())
-			try {socket = new ServerSocket(PORT, 10, InetAddress.getLocalHost());}catch (IOException e) {/*LOG IT*/}
+			try {socket = new ServerSocket(PORT);}catch (IOException e) {/*LOG IT*/}
 		return socket;
 	}
 	
@@ -37,24 +49,25 @@ public class Server {
 	}
 
 	private static void handleClient(Socket client) {
-		StringBuilder request = null;
-		try(BufferedReader buffer = new BufferedReader(new InputStreamReader(client.getInputStream()))){
+		StringBuilder request;
+		PrintWriter printWrite;
+		BufferedReader buffer;
+		
+		try{
+			buffer = new BufferedReader(new InputStreamReader(client.getInputStream()));
+			printWrite = new PrintWriter(client.getOutputStream());     
 			request = new StringBuilder();
 			
 			String line;
-			while((line = buffer.readLine()) != null) {
-				request.append(line);
-			}
+			while((line = buffer.readLine()) != null && line.length() != 0) {request.append(line);}
+			
+			RequestHandler.handle(client, printWrite, request.toString());
+			closeBoth(client, printWrite);		
+			
 		}catch (IOException e) {/*LOG IT*/}
-		
-		handleRequest(request.toString(), client);
-	}
-
-	private static void handleRequest(String string, Socket client) {
-		if(string.isEmpty())
-			closeSocket(client);
-		
 	}
 	
-	private static void closeSocket(Socket client) {try {client.close();} catch (IOException e) {}}
+	private static void closeBoth(Socket client, PrintWriter printWrite) {try {printWrite.close(); client.close();} catch (IOException e) {}}
+	
+	public static void close() {try {socket.close();} catch (IOException e) {}}
 }
