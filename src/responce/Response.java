@@ -6,11 +6,11 @@ public class Response {
     	//Status of response
 		private Status status;
 		//Server information
-		private String server;
+		private String server = "Vanilla Java";
 		//version of the protocol 1.1 will be set as default
 		private String version = "HTTP/1.1";
 		//length of body
-		private int contentLengthLine;
+		private int contentLength;
 		//Type of content if JSON or HTML page
 		private ContentType contentType;
 		//Holds Document/Information to be sent
@@ -24,7 +24,7 @@ public class Response {
 			return this;
 		}
 		
-		public Builder server(String server) {
+		private Builder server(String server) {
 			this.server = server;
 			return this;
 		}
@@ -34,8 +34,8 @@ public class Response {
 			return this;
 		}
 		
-		public Builder contentLengthLine(int contentLengthLine) {
-			this.contentLengthLine = contentLengthLine;
+		public Builder contentLength(int contentLength) {
+			this.contentLength = contentLength;
 			return this;
 		}
 		
@@ -54,7 +54,7 @@ public class Response {
 			//Content Type
 			responseAppender.append(String.format("%s; charset=utf-8\r\n", Header.CONTENT_TYPE.toString() + contentType));
 			//Content Length
-			responseAppender.append(String.format("%s\r\n", Header.CONTENT_LENGTH.toString() + contentLengthLine));
+			responseAppender.append(String.format("%s\r\n", Header.CONTENT_LENGTH.toString() + contentLength));
 			//Empty line
 			responseAppender.append("\r\n");
 			//Body
