@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 public class Parser {
 
+	//Takes the full request then tokenize it and returns it as hash-map 
 	public static HashMap<String, String> parse(String request){
 		BufferedReader buffer = new BufferedReader(new StringReader(request));
 		HashMap<String, String> tokens = new HashMap<String, String>();
@@ -24,7 +25,15 @@ public class Parser {
 		return tokens;
 	}
 	
+	//Takes first line of request and return kind of method it contain
 	private static String whichMethod(String statusLine){return statusLine.contains(Verb.GET.toString()) ? Verb.GET.toString() : Verb.POST.toString();}
 	
+	/*private static void parseStatusLine(HashMap<String, String> tokens, String statusLine) {
+		String[] subStatusLine = statusLine.split("\n");
+		tokens.put("verb", value)
+		
+	}*/
+	
+	//takes line and return it colon index
 	private static int getColonIndex(String line) {return line.indexOf(':');}
 }

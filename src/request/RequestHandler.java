@@ -14,34 +14,38 @@ import responce.Response.Builder;
 
 public class RequestHandler {
 	
-	private static final ClassLoader CLASS_LOADER = Thread.currentThread().getContextClassLoader();
-
 	public static void handle(PrintWriter printWrite, String request) {
 		
 		Builder builder = new Response.Builder();
 		
 		HashMap<String, String> parsedRequeset = Parser.parse(request);
 		
-		handleStatusLine(parsedRequeset.get("method"), builder);
+		handleStatusLine(parsedRequeset.get("method"),"UNFINISHED", builder);
 		
 		printWrite.print(builder.build().getResponse());
 	}
 	
-	private static void handleStatusLine(String method, Builder builder){
+	private static void handleStatusLine(String method, String path, Builder builder){
 		if(method.equals(Verb.GET.toString()))
-			handleGetRequest(builder);
+			handleGetRequest(path, builder);
+		else if(method.equals(Verb.POST.toString()))
+			handlePostRequest();
 	}
 	
-	private static void handleGetRequest(Builder builder) {
-		 String body = getTemplateAsString();
+	public static void handlePostRequest() {
+		
+	}
+	
+	private static void handleGetRequest(String path, Builder builder) {
+		 String body = getTemplateAsString(path);
 		 int lengthOfBody = body.length();
 		 
 		 if(body != null)
 			 builder.status(Status.OK).contentLength(lengthOfBody).body(body).contentType(ContentType.HTML);
 	}
 	
-	private static String getTemplateAsString() {
-		InputStream inputStream = CLASS_LOADER.getResourceAsStream(resolveTemplateName());
+	private static String getTemplateAsString(String path) {
+		InputStream inputStream = TemplateHandler.getTemplateAsInputStream(path);
 		System.out.println(inputStream == null);
 		if(inputStream == null)
 			return null;
@@ -59,9 +63,4 @@ public class RequestHandler {
 		
 		return template.toString();
 	}
-	
-	private static String resolveTemplateName() {
-		return "index.html";
-	}
-	
 }
