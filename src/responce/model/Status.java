@@ -1,4 +1,4 @@
-package responce;
+package responce.model;
 
 public enum Status {
 

@@ -1,4 +1,4 @@
-package request;
+package request.model;
 
 public enum Verb {
 	POST{

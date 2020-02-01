@@ -1,66 +1,41 @@
 package request;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
-import responce.ContentType;
+import request.model.Component;
 import responce.Response;
-import responce.Status;
 import responce.Response.Builder;
+import responce.model.Status;
 
 public class RequestHandler {
 	
 	public static void handle(PrintWriter printWrite, String request) {
 		
-		Builder builder = new Response.Builder();
+		Builder responseBuilder = new Response.Builder();
 		
 		HashMap<String, String> parsedRequeset = Parser.parse(request);
 		
-		handleStatusLine(parsedRequeset.get("method"),"UNFINISHED", builder);
+		String path = parsedRequeset.get(Component.Path.toString());
 		
-		printWrite.print(builder.build().getResponse());
+		writeStatusResponse(responseBuilder, path);
+		
+		writeBody(responseBuilder, path);
+
+		printWrite.print(responseBuilder.build().getResponse());
 	}
 	
-	private static void handleStatusLine(String method, String path, Builder builder){
-		if(method.equals(Verb.GET.toString()))
-			handleGetRequest(path, builder);
-		else if(method.equals(Verb.POST.toString()))
-			handlePostRequest();
+	public static void writeStatusResponse(Builder responseBuilder, String path) {
+		if(TemplateHandler.notFound(path))
+			responseBuilder.status(Status.NOT_FOUND);
+		else
+			responseBuilder.status(Status.OK);
 	}
 	
-	public static void handlePostRequest() {
-		
-	}
+	public static void writeBody(Builder responseBuilder, String path) {responseBuilder.body(TemplateHandler.getTemplateAsString(path));}
 	
-	private static void handleGetRequest(String path, Builder builder) {
-		 String body = getTemplateAsString(path);
-		 int lengthOfBody = body.length();
-		 
-		 if(body != null)
-			 builder.status(Status.OK).contentLength(lengthOfBody).body(body).contentType(ContentType.HTML);
+	public static void handleBody(String path) {
+		
 	}
-	
-	private static String getTemplateAsString(String path) {
-		InputStream inputStream = TemplateHandler.getTemplateAsInputStream(path);
-		System.out.println(inputStream == null);
-		if(inputStream == null)
-			return null;
-		
-		BufferedReader buffer;
-		StringBuilder template = new StringBuilder();
-		String line;
-		
-		try {
-			buffer = new BufferedReader(new InputStreamReader(inputStream));
-			
-			while((line = buffer.readLine()) != null)
-				template.append(line);
-		}catch (IOException e) {}
-		
-		return template.toString();
-	}
+
 }

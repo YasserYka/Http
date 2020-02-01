@@ -1,5 +1,7 @@
 package request;
 
+import request.model.Verb;
+
 public class Request{
 	
     public static class Builder {

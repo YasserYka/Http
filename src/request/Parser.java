@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 
+import request.model.Component;
+
 public class Parser {
 
 	//Takes the full request then tokenize it and returns it as hash-map 
@@ -15,8 +17,7 @@ public class Parser {
 		int indexOfColon;
 		
 		try {
-			line = buffer.readLine();
-			tokens.put("method", whichMethod(line));
+			parseStatusLine(tokens, buffer.readLine());
 			while((line = buffer.readLine()) != null){
 				indexOfColon = getColonIndex(line);
 				tokens.put(line.substring(0,indexOfColon), line.substring(indexOfColon + 1, line.length()) );
@@ -25,14 +26,12 @@ public class Parser {
 		return tokens;
 	}
 	
-	//Takes first line of request and return kind of method it contain
-	private static String whichMethod(String statusLine){return statusLine.contains(Verb.GET.toString()) ? Verb.GET.toString() : Verb.POST.toString();}
-	
-	/*private static void parseStatusLine(HashMap<String, String> tokens, String statusLine) {
-		String[] subStatusLine = statusLine.split("\n");
-		tokens.put("verb", value)
-		
-	}*/
+	//Takes and split status line and puts them in hash-map
+	private static void parseStatusLine(HashMap<String, String> tokens, String statusLine) {
+		String[] splitedStatusLine = statusLine.split("\n");
+		tokens.put(Component.Method.toString(), splitedStatusLine[0]);
+		tokens.put(Component.Path.toString(), splitedStatusLine[1]);
+	}
 	
 	//takes line and return it colon index
 	private static int getColonIndex(String line) {return line.indexOf(':');}

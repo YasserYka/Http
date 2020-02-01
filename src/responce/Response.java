@@ -1,5 +1,9 @@
 package responce;
 
+import responce.model.ContentType;
+import responce.model.Header;
+import responce.model.Status;
+
 public class Response {
 
     public static class Builder {
@@ -34,7 +38,7 @@ public class Response {
 			return this;
 		}
 		
-		public Builder contentLength(int contentLength) {
+		private Builder contentLength(int contentLength) {
 			this.contentLength = contentLength;
 			return this;
 		}
@@ -54,7 +58,7 @@ public class Response {
 			//Content Type
 			responseAppender.append(String.format("%s; charset=utf-8\r\n", Header.CONTENT_TYPE.toString() + contentType));
 			//Content Length
-			responseAppender.append(String.format("%s\r\n", Header.CONTENT_LENGTH.toString() + contentLength));
+			responseAppender.append(String.format("%s\r\n", Header.CONTENT_LENGTH.toString() + body.length()));
 			//Empty line
 			responseAppender.append("\r\n");
 			//Body
