@@ -21,9 +21,10 @@ public class TemplateHandler {
 	//Gets path and returns a template name if found
 	private static String resolvePath(String path) {
 		if(notFound(path))
-			return "error.html";
-		
-		return mapper.get(path);
+			return "notFound.html";
+		else
+			//return mapper.get(path);
+			return "index.html";
 	}
 	
 	private static InputStream getTemplateAsInputStream(String path){return CLASS_LOADER.getResourceAsStream(resolvePath(path));}
@@ -34,7 +35,7 @@ public class TemplateHandler {
 	
 	public static String getTemplateAsString(String path) {
 		InputStream inputStream = TemplateHandler.getTemplateAsInputStream(path);
-		System.out.println(inputStream == null);
+		
 		if(inputStream == null)
 			return null;
 		

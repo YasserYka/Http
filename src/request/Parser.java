@@ -28,7 +28,7 @@ public class Parser {
 	
 	//Takes and split status line and puts them in hash-map
 	private static void parseStatusLine(HashMap<String, String> tokens, String statusLine) {
-		String[] splitedStatusLine = statusLine.split("\n");
+		String[] splitedStatusLine = statusLine.split(" ");
 		tokens.put(Component.Method.toString(), splitedStatusLine[0]);
 		tokens.put(Component.Path.toString(), splitedStatusLine[1]);
 	}

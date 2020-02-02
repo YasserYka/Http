@@ -33,9 +33,4 @@ public class RequestHandler {
 	}
 	
 	public static void writeBody(Builder responseBuilder, String path) {responseBuilder.body(TemplateHandler.getTemplateAsString(path));}
-	
-	public static void handleBody(String path) {
-		
-	}
-
 }

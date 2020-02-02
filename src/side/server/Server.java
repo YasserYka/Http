@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import java.util.Optional;
 
 import request.RequestHandler;
+import side.client.HandleClient;
 
 public class Server {
 
@@ -31,33 +32,12 @@ public class Server {
 	
 	private static void accept() {
 		try {	
-			Socket client = socket.accept();
-			System.out.println("R: CLIENT CONNECTION ACCEPTED");
-			handleClient(client);
+			Thread thread = new Thread(new HandleClient(socket.accept()));
+			System.out.println("R: CLIENT CONNECTED AND THREAD CREATED FOR IT");
+			thread.start();
 		}catch (IOException e){/*LOG IT*/}
 		
 	}
-
-	private static void handleClient(Socket client) {
-		StringBuilder request;
-		PrintWriter printWrite;
-		BufferedReader buffer;
-		
-		try{
-			buffer = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			printWrite = new PrintWriter(client.getOutputStream());     
-			request = new StringBuilder();
-			
-			String line;
-			while((line = buffer.readLine()) != null && line.length() != 0) {request.append(line+'\n');}
-			RequestHandler.handle(printWrite, request.toString());
-			
-			closeBoth(client, printWrite);		
-			
-		}catch (IOException e) {/*LOG IT*/}
-	}
-	
-	private static void closeBoth(Socket client, PrintWriter printWrite) {try {printWrite.close(); client.close();} catch (IOException e) {}}
 	
 	public static void close() {try {socket.close();} catch (IOException e) {}}
 }
