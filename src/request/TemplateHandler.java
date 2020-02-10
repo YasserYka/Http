@@ -12,10 +12,18 @@ public class TemplateHandler {
 	private static final ClassLoader CLASS_LOADER = Thread.currentThread().getContextClassLoader();
 
 	//The key holds path and value holds the template file name
-	private static HashMap<String, String> mapper = new HashMap<String, String>();
+	private static HashMap<String, String> MAPPER = new HashMap<String, String>();
+	
+	//Check if MAPPER is been injected or not
+	private static boolean IS_FED = false;
+	
+	private static void feed() {
+		IS_FED = true;
+		MAPPER.put("/", "index.html");
+	}
 	
 	public static boolean notFound(String path) {
-		return mapper.containsKey(path);
+		return !MAPPER.containsKey(path);
 	}
 	
 	//Gets path and returns a template name if found
@@ -23,17 +31,20 @@ public class TemplateHandler {
 		if(notFound(path))
 			return "notFound.html";
 		else
-			//return mapper.get(path);
-			return "index.html";
+			return MAPPER.get(path);
 	}
 	
 	private static InputStream getTemplateAsInputStream(String path){return CLASS_LOADER.getResourceAsStream(resolvePath(path));}
 	
 	//Puts path and it's related file name in hash-map
-	public static void add(String path, String fileName) {mapper.put(path, fileName);}
+	public static void add(String path, String fileName) {MAPPER.put(path, fileName);}
 	
 	
 	public static String getTemplateAsString(String path) {
+		
+		if(!IS_FED)
+			feed();
+		
 		InputStream inputStream = TemplateHandler.getTemplateAsInputStream(path);
 		
 		if(inputStream == null)

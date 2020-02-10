@@ -13,6 +13,11 @@ import request.RequestHandler;
 import side.client.HandleClient;
 
 public class Server {
+	
+	public static void main(String args[]) {
+		create();
+		run();
+	}
 
 	private static ServerSocket socket = null;
 	private final static int PORT = 5555;
