@@ -6,17 +6,23 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import request.RequestHandler;
+import side.server.Server;
 
 public class HandleClient implements Runnable{
 
 	private Socket client;
 	
+	private static Logger LOGGER = LogManager.getLogger(HandleClient.class);
+
+	
 	public HandleClient(Socket client) {this.client = client;}
 	 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		StringBuilder request;
 		PrintWriter printWrite;
 		BufferedReader buffer;
@@ -32,7 +38,7 @@ public class HandleClient implements Runnable{
 			
 			closeBoth(client, printWrite);		
 			
-		}catch (IOException e) {/*LOG IT*/}
+		}catch (IOException e) { LOGGER.error(e); }
 	}
 	
 	private static void closeBoth(Socket client, PrintWriter printWrite) {try {printWrite.close(); client.close();} catch (IOException e) {}}

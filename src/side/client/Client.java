@@ -6,7 +6,12 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Client {
+	
+	private static Logger LOGGER = LogManager.getLogger(Client.class);
 	
 	private Socket socket;
 	private static InetAddress ADDRESS;
@@ -20,8 +25,8 @@ public class Client {
 			ADDRESS = InetAddress.getLocalHost();
 			socket = new Socket(ADDRESS, PORT);
 		}
-		catch(UnknownHostException e) {}
-		catch(IOException e) {}
+		catch(UnknownHostException e) { LOGGER.error(e); }
+		catch(IOException e) { LOGGER.error(e); }
 	}
 	
 	public void sendMessage(String message) {
@@ -29,7 +34,7 @@ public class Client {
 			printWrite = new PrintWriter(socket.getOutputStream(), true);
 			printWrite.print(message);
 			printWrite.flush();
-		} catch (IOException e) {}		
+		} catch (IOException e) { LOGGER.error(e); }		
 	}
 	
 	

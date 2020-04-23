@@ -5,9 +5,15 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import request.model.Component;
+import side.client.HandleClient;
 
 public class Parser {
+	
+	private static Logger LOGGER = LogManager.getLogger(Parser.class);
 
 	//Takes the full request then tokenize it and returns it as hash-map 
 	public static HashMap<String, String> parse(String request){
@@ -22,7 +28,7 @@ public class Parser {
 				indexOfColon = getColonIndex(line);
 				tokens.put(line.substring(0,indexOfColon), line.substring(indexOfColon + 1, line.length()) );
 			}
-		} catch (IOException e) {/*TODO: LOG IT*/}
+		} catch (IOException e) { LOGGER.error(e); }
 		return tokens;
 	}
 	

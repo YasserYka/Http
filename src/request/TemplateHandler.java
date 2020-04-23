@@ -14,12 +14,11 @@ public class TemplateHandler {
 	//The key holds path and value holds the template file name
 	private static HashMap<String, String> MAPPER = new HashMap<String, String>();
 	
-	//Check if MAPPER is been injected or not
-	private static boolean IS_FED = false;
+	private static final String NOT_FOUND = "/notfound";
 	
-	private static void feed() {
-		IS_FED = true;
+	static {
 		MAPPER.put("/", "index.html");
+		MAPPER.put(NOT_FOUND, "notFound.html");
 	}
 	
 	public static boolean notFound(String path) {
@@ -29,21 +28,17 @@ public class TemplateHandler {
 	//Gets path and returns a template name if found
 	private static String resolvePath(String path) {
 		if(notFound(path))
-			return "notFound.html";
-		else
-			return MAPPER.get(path);
+			return MAPPER.get(NOT_FOUND);
+		return MAPPER.get(path);
 	}
 	
-	private static InputStream getTemplateAsInputStream(String path){return CLASS_LOADER.getResourceAsStream(resolvePath(path));}
+	private static InputStream getTemplateAsInputStream(String path){ return CLASS_LOADER.getResourceAsStream(resolvePath(path)); }
 	
 	//Puts path and it's related file name in hash-map
 	public static void add(String path, String fileName) {MAPPER.put(path, fileName);}
 	
 	
 	public static String getTemplateAsString(String path) {
-		
-		if(!IS_FED)
-			feed();
 		
 		InputStream inputStream = TemplateHandler.getTemplateAsInputStream(path);
 		
@@ -59,7 +54,9 @@ public class TemplateHandler {
 			
 			while((line = buffer.readLine()) != null)
 				template.append(line);
-		}catch (IOException e) {}
+		} catch (IOException e) {
+			
+		}
 		
 		return template.toString();
 	}
